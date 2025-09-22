@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { User, Mail, Lock, MapPin, Eye, EyeOff, ArrowRight, CheckCircle, AlertCircle, Droplets, Shield, Users, Building2, Loader2 } from 'lucide-react';
+import { User, Mail, Lock, Eye, EyeOff, ArrowRight, CheckCircle, AlertCircle, Droplets, Shield, Users, Building2, Loader2 } from 'lucide-react';
 import { authAPI } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 import toast from 'react-hot-toast';
@@ -18,8 +18,7 @@ const Register = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    role: 'citizen',
-    location: null
+    role: 'citizen'
   });
   const [passwordStrength, setPasswordStrength] = useState(0);
   const [passwordChecks, setPasswordChecks] = useState({
@@ -54,28 +53,7 @@ const Register = () => {
     }));
   };
 
-  const handleLocationDetect = () => {
-    if (!navigator.geolocation) {
-      toast.error('Geolocation is not supported by this browser');
-      return;
-    }
-
-    toast.loading('Detecting your location...', { id: 'location' });
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const location = {
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude
-        };
-        setFormData(prev => ({ ...prev, location }));
-        toast.success('Location detected successfully!', { id: 'location' });
-      },
-      (error) => {
-        console.error('Error getting location:', error);
-        toast.error('Failed to detect location. Please try again.', { id: 'location' });
-      }
-    );
-  };
+  // Location detection removed as requested
 
   const handleNextStep = () => {
     if (currentStep === 1) {
@@ -110,23 +88,41 @@ const Register = () => {
 
     setIsLoading(true);
     try {
-      const response = await authAPI.register({
+      const registrationData = {
         name: formData.name,
         email: formData.email,
         password: formData.password,
         role: formData.role,
-        location: formData.location
-      });
+        latitude: 28.6139, // Default to Delhi
+        longitude: 77.2090
+      };
+      
+      console.log('Sending registration data:', registrationData);
+      const response = await authAPI.register(registrationData);
+      console.log('Registration response:', response);
 
       toast.success('Account created successfully! Welcome to the system!');
       login(response.data.token, response.data.user);
       navigate('/dashboard');
     } catch (error) {
       console.error('Registration error:', error);
+      console.error('Error details:', {
+        message: error.message,
+        code: error.code,
+        response: error.response?.data,
+        status: error.response?.status
+      });
+      
       if (error.code === 'ERR_NETWORK' || error.message.includes('ERR_CONNECTION_REFUSED')) {
         toast.error('Cannot connect to server. Please make sure the backend is running.');
+      } else if (error.response?.data?.errors) {
+        // Show specific validation errors
+        const errorMessages = error.response.data.errors.map(err => err.msg).join(', ');
+        toast.error(`Validation failed: ${errorMessages}`);
+      } else if (error.response?.data?.message) {
+        toast.error(error.response.data.message);
       } else {
-        toast.error(error.response?.data?.message || 'Registration failed. Please try again.');
+        toast.error(`Registration failed: ${error.message}`);
       }
     } finally {
       setIsLoading(false);
@@ -411,33 +407,7 @@ const Register = () => {
                   )}
                 </div>
 
-                {/* Location Detection */}
-                <div className="bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-xl p-6">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4">
-                      <div className="p-3 bg-green-100 rounded-full">
-                        <MapPin className="w-6 h-6 text-green-600" />
-                      </div>
-                      <div>
-                        <p className="text-lg font-medium text-green-800">Location Detection</p>
-                        {formData.location ? (
-                          <p className="text-sm text-green-600">
-                            Detected: {formData.location.latitude.toFixed(4)}, {formData.location.longitude.toFixed(4)}
-                          </p>
-                        ) : (
-                          <p className="text-sm text-green-600">Click to detect your location for better analysis</p>
-                        )}
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={handleLocationDetect}
-                      className="px-6 py-3 bg-green-500 text-white rounded-lg text-sm font-medium hover:bg-green-600 transition-colors shadow-lg hover:shadow-xl"
-                    >
-                      {formData.location ? 'Update Location' : 'Detect Location'}
-                    </button>
-                  </div>
-                </div>
+                {/* Location Detection removed as requested */}
 
                 <div className="flex space-x-4">
                   <button

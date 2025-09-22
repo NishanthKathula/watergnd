@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['citizen', 'researcher', 'policy_maker', 'admin'],
+    enum: ['citizen', 'researcher', 'policy_maker', 'admin', 'government', 'farmer'],
     default: 'citizen'
   },
   location: {

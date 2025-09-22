@@ -7,7 +7,7 @@ echo.
 echo Creating .env file with MongoDB connection...
 
 echo # MongoDB Connection > .env
-echo MONGODB_URI=mongodb+srv://nishanthkatthula:tharun123@cluster0.8qgqj.mongodb.net/groundwater?retryWrites=true^&w=majority >> .env
+echo MONGODB_URI=mongodb+srv://245122735307_db_user:Tharun%40123@cluster0.v7zegbz.mongodb.net/?retryWrites=true^^&w=majority^^&appName=Cluster0 >> .env
 echo. >> .env
 echo # JWT Secret >> .env
 echo JWT_SECRET=your-super-secret-jwt-key-change-this-in-production >> .env

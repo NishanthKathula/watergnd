@@ -20,8 +20,8 @@ router.post('/register', [
   body('name').trim().isLength({ min: 2 }).withMessage('Name must be at least 2 characters'),
   body('email').isEmail().normalizeEmail().withMessage('Please provide a valid email'),
   body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
-  body('latitude').isFloat({ min: -90, max: 90 }).withMessage('Valid latitude required'),
-  body('longitude').isFloat({ min: -180, max: 180 }).withMessage('Valid longitude required')
+  body('latitude').optional().isFloat({ min: -90, max: 90 }).withMessage('Valid latitude required'),
+  body('longitude').optional().isFloat({ min: -180, max: 180 }).withMessage('Valid longitude required')
 ], async (req, res) => {
   try {
     // Check for validation errors
@@ -53,7 +53,7 @@ router.post('/register', [
       role,
       location: {
         type: 'Point',
-        coordinates: [longitude, latitude]
+        coordinates: [longitude || 77.2090, latitude || 28.6139] // Default to Delhi
       }
     });
 

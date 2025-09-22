@@ -3,7 +3,7 @@ const path = require('path');
 
 // Create .env file with default configuration
 const envContent = `# MongoDB Configuration
-MONGODB_URI=mongodb+srv://245122735307_db_user:your_actual_password@cluster0.v7zegbz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+MONGODB_URI=mongodb+srv://245122735307_db_user:Tharun%40123@cluster0.v7zegbz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 
 # JWT Configuration
 JWT_SECRET=your_super_secret_jwt_key_change_this_in_production_12345
